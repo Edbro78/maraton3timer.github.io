@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sub-3 Maraton Kalkulator - Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #343a40;
+            --heading-color: #111827;
+            --border-color: #e5e7eb;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --slider-thumb-color: var(--primary-color);
+            --slider-track-color: #d1d5db;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+        }
+
+        h1, h2, h3, h4 {
+            color: var(--heading-color);
+            font-weight: 600;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+            background: linear-gradient(45deg, var(--primary-color), #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .input-group h4 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        .slider-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .slider-label-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        label {
+            font-weight: 500;
+            color: #4b5563;
+        }
+        
+        .slider-value {
+            font-weight: 600;
+            color: var(--primary-color);
+            background-color: #eef2ff;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: var(--slider-track-color);
+            border-radius: 3px;
+            outline: none;
+            transition: opacity .2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--slider-thumb-color);
+            cursor: pointer;
+            border-radius: 50%;
+            border: 3px solid var(--card-bg);
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: var(--slider-thumb-color);
+            cursor: pointer;
+            border-radius: 50%;
+            border: 3px solid var(--card-bg);
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+        }
+        
+        button {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(45deg, var(--primary-color), #6d28d9);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 10px rgba(79, 70, 229, 0.3);
+        }
+        
+        #results {
+            display: none;
+            margin-top: 2rem;
+        }
+        
+        #overallAssessment {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        #overallAssessment p {
+            font-size: 1.1rem;
+            color: #4b5563;
+        }
+        #overallAssessment strong {
+            display: block;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0.5rem 0;
+        }
+        
+        .feedback-grid {
+             display: grid;
+             grid-template-columns: 1fr;
+             gap: 1.5rem;
+        }
+
+        .feedback-section {
+            padding: 1.5rem;
+            border-left: 4px solid var(--border-color);
+        }
+        .feedback-section p { margin: 0.5rem 0; }
+
+        .positive { color: var(--success-color); font-weight: 500; }
+        .warning { color: var(--warning-color); font-weight: 500; }
+        .critical-warning { color: var(--danger-color); font-weight: 600; }
+
+        @media (min-width: 768px) {
+            .feedback-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Sub-3:00 Maraton Kalkulator</h1>
+        <p class="subtitle">Analyser ditt potensial med denne avanserte kalkulatoren.</p>
+        
+        <div class="card">
+            <div class="input-grid">
+                <!-- Løpstider -->
+                <div class="input-group">
+                    <h4>Løpstider</h4>
+                    <div class="slider-group">
+                        <div class="slider-label-container"><label for="input3kSec">3 km</label><span class="slider-value" id="output3k">10:40</span></div>
+                        <input type="range" id="input3kSec" min="420" max="900" value="640" step="1">
+                    </div>
+                    <div class="slider-group">
+                        <div class="slider-label-container"><label for="input5kSec">5 km</label><span class="slider-value" id="output5k">18:28</span></div>
+                        <input type="range" id="input5kSec" min="900" max="1500" value="1108" step="1">
+                    </div>
+                    <div class="slider-group">
+                        <div class="slider-label-container"><label for="input10kSec">10 km</label><span class="slider-value" id="output10k">38:02</span></div>
+                        <input type="range" id="input10kSec" min="1920" max="3000" value="2282" step="1">
+                    </div>
+                    <div class="slider-group">
+                        <div class="slider-label-container"><label for="inputhmSec">Halvmaraton</label><span class="slider-value" id="outputhm">01:25:00</span></div>
+                        <input type="range" id="inputhmSec" min="4500" max="7200" value="5100" step="1">
+                    </div>
+                </div>
+
+                <!-- Styrketester -->
+                <div class="input-group">
+                    <h4>Styrketester</h4>
+                    <div class="slider-group"><div class="slider-label-container"><label for="inputPlankSec">Planke</label><span class="slider-value" id="outputPlank">90 sek</span></div><input type="range" id="inputPlankSec" min="30" max="300" value="90" step="5"></div>
+                    <div class="slider-group"><div class="slider-label-container"><label for="inputSidePlankSec">Sideplanke</label><span class="slider-value" id="outputSidePlank">45 sek</span></div><input type="range" id="inputSidePlankSec" min="15" max="180" value="45" step="5"></div>
+                    <div class="slider-group"><div class="slider-label-container"><label for="inputPushups">Armhevinger</label><span class="slider-value" id="outputPushups">25 stk</span></div><input type="range" id="inputPushups" min="0" max="100" value="25" step="1"></div>
+                    <div class="slider-group"><div class="slider-label-container"><label for="inputPullups">Pull-ups</label><span class="slider-value" id="outputPullups">5 stk</span></div><input type="range" id="inputPullups" min="0" max="30" value="5" step="1"></div>
+                    <div class="slider-group"><div class="slider-label-container"><label for="inputCalfRaise">Enfots tåhev i trapp</label><span class="slider-value" id="outputCalfRaise">20 reps</span></div><input type="range" id="inputCalfRaise" min="0" max="50" value="20" step="1"></div>
+                </div>
+
+                <!-- Kropp & Volum -->
+                <div class="input-group">
+                    <h4>Kropp & Volum</h4>
+                    <div class="slider-group"><div class="slider-label-container"><label for="inputBodyFatPercent">Fettprosent</label><span class="slider-value" id="outputBodyFat">12 %</span></div><input type="range" id="inputBodyFatPercent" min="5" max="35" value="12" step="0.5"></div>
+                    <div class="slider-group"><div class="slider-label-container"><label for="inputWeeklyTotalKm">Km per uke</label><span class="slider-value" id="outputWeeklyKm">70 km</span></div><input type="range" id="inputWeeklyTotalKm" min="20" max="160" value="70" step="1"></div>
+                    <div class="slider-group"><div class="slider-label-container"><label for="inputWeeklyThresholdKm">Terskel-km per uke</label><span class="slider-value" id="outputThresholdKm">12 km</span></div><input type="range" id="inputWeeklyThresholdKm" min="0" max="30" value="12" step="1"></div>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="runAnalysis()">Analyser Nå</button>
+
+        <div id="results">
+            <div id="overallAssessment" class="card"></div>
+            <div class="card">
+                <div class="feedback-grid">
+                    <div id="feedbackRunning" class="feedback-section"></div>
+                    <div id="feedbackStrength" class="feedback-section"></div>
+                    <div id="feedbackBodyAndVolume" class="feedback-section"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // --- KONFIGURASJON OG KONSTANTER ---
+    const STANDARDS = {
+        MARATHON_SEC: (2 * 3600) + (59 * 60) + 59,
+        RACE_REFS: { '3k': { name: '3 km', min: 640, buffer: 630, weight: 1 }, '5k': { name: '5 km', min: 1108, buffer: 1080, weight: 2 }, '10k': { name: '10 km', min: 2282, buffer: 2220, weight: 3 }, 'hm': { name: 'Halvmaraton', min: 5100, buffer: 4920, weight: 5 }, },
+        STRENGTH: { 
+            plank: { label: 'Planke', min: 90, unit: 'sek' }, 
+            sidePlank: { label: 'Sideplanke', min: 45, unit: 'sek' }, 
+            pushups: { label: 'Armhevinger', min: 25, unit: 'stk' }, 
+            pullups: { label: 'Pull-ups', min: 5, unit: 'stk' }, 
+            calfRaise: { label: 'Enfots tåhev i trapp', min: 20, unit: 'reps' },
+        },
+        BODY_COMP: { label: 'Fettprosent', fatPercentMin: 10, fatPercentMax: 15, unit: '%' },
+        TRAINING_VOLUME: { weeklyKm: { label: 'Km per uke', min: 70, unit: 'km' }, thresholdKm: { label: 'Terskel-km', min: 10, max: 14, unit: 'km' }, },
+        PENALTIES: { STRENGTH: 120, VOLUME: 300, }
+    };
+
+    // --- HJELPEFUNKSJONER ---
+    const getSliderValue = (id) => parseFloat(document.getElementById(id).value) || 0;
+    function formatTime(totalSeconds) { if (isNaN(totalSeconds) || totalSeconds === 0) return "--:--:--"; const h = Math.floor(totalSeconds / 3600); const m = Math.floor((totalSeconds % 3600) / 60); const s = Math.floor(totalSeconds % 60); return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`; }
+    function formatShortTime(totalSeconds) { if (isNaN(totalSeconds) || totalSeconds === 0) return "-"; const m = Math.floor(totalSeconds / 60); const s = Math.floor(totalSeconds % 60); return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`; }
+    function createFeedbackHTML(label, status, message) { return `<p><strong>${label}:</strong> <span class="${status}">${message}</span></p>`; }
+
+    // --- SLIDER OPPSETT ---
+    function setupSliders() {
+        // Time Sliders
+        const timeSliders = { 'input3kSec': 'output3k', 'input5kSec': 'output5k', 'input10kSec': 'output10k', 'inputhmSec': 'outputhm' };
+        for (const [sliderId, outputId] of Object.entries(timeSliders)) {
+            const slider = document.getElementById(sliderId);
+            const output = document.getElementById(outputId);
+            const formatter = sliderId === 'inputhmSec' ? formatTime : formatShortTime;
+            slider.oninput = () => output.textContent = formatter(slider.value);
+            output.textContent = formatter(slider.value);
+        }
+
+        // Unit Sliders
+        const unitSliders = {
+            'inputPlankSec': { output: 'outputPlank', unit: 'sek' },
+            'inputSidePlankSec': { output: 'outputSidePlank', unit: 'sek' },
+            'inputPushups': { output: 'outputPushups', unit: 'stk' },
+            'inputPullups': { output: 'outputPullups', unit: 'stk' },
+            'inputCalfRaise': { output: 'outputCalfRaise', unit: 'reps' },
+            'inputBodyFatPercent': { output: 'outputBodyFat', unit: '%' },
+            'inputWeeklyTotalKm': { output: 'outputWeeklyKm', unit: 'km' },
+            'inputWeeklyThresholdKm': { output: 'outputThresholdKm', unit: 'km' },
+        };
+        for (const [sliderId, data] of Object.entries(unitSliders)) {
+             const slider = document.getElementById(sliderId);
+             const output = document.getElementById(data.output);
+             slider.oninput = () => output.textContent = `${slider.value} ${data.unit}`;
+             output.textContent = `${slider.value} ${data.unit}`;
+        }
+    }
+
+    // --- ANALYSEFUNKSJONER (UENDRET LOGIKK) ---
+    function getRunningFeedback(userInput) {
+        let html = '<h4>Løpsprestasjoner</h4>'; const estimates = [];
+        for (const key of Object.keys(STANDARDS.RACE_REFS)) {
+            const ref = STANDARDS.RACE_REFS[key]; const time = userInput[`user${key}Sec`];
+            if (time > 0) {
+                let estMarathonSec = (key === 'hm') ? time * 2 + 600 : STANDARDS.MARATHON_SEC * (time / ref.min);
+                estimates.push({ time: estMarathonSec, weight: ref.weight });
+                let status, msg;
+                if (time <= ref.buffer) { status = 'positive'; msg = `Tid (${formatShortTime(time)}) er bedre enn buffer (${formatShortTime(ref.buffer)}).`; }
+                else if (time <= ref.min) { status = 'warning'; msg = `Tid (${formatShortTime(time)}) når minimumskrav (${formatShortTime(ref.min)}).`; }
+                else { status = 'critical-warning'; msg = `Tid (${formatShortTime(time)}) er tregere enn krav (${formatShortTime(ref.min)}).`; }
+                html += createFeedbackHTML(ref.name, status, `${msg} Estimat: ${formatTime(estMarathonSec)}.`);
+            } else { html += `<p><strong>${ref.name}:</strong> Ikke oppgitt. Mål: ${formatShortTime(ref.min)}.</p>`; }
+        }
+        return { html, estimates };
+    }
+    function getStrengthFeedback(userInput) {
+        let html = '<h4>Styrkeanalyse</h4>'; let warnings = 0;
+        const tests = [ 
+            { value: userInput.userPlankSec, ref: STANDARDS.STRENGTH.plank }, 
+            { value: userInput.userSidePlankSec, ref: STANDARDS.STRENGTH.sidePlank }, 
+            { value: userInput.userPushups, ref: STANDARDS.STRENGTH.pushups }, 
+            { value: userInput.userPullups, ref: STANDARDS.STRENGTH.pullups }, 
+            { value: userInput.userCalfRaise, ref: STANDARDS.STRENGTH.calfRaise } 
+        ];
+        tests.forEach(test => {
+            if (test.value >= test.ref.min) { html += createFeedbackHTML(test.ref.label, 'positive', `Resultat: ${test.value} ${test.ref.unit}. Krav oppfylt.`); }
+            else { html += createFeedbackHTML(test.ref.label, 'warning', `Resultat: ${test.value} ${test.ref.unit}. Under kravet (${test.ref.min} ${test.ref.unit}).`); warnings++; }
+        });
+        return { html, warnings };
+    }
+    function getBodyAndVolumeFeedback(userInput) {
+        let html = '<h4>Kropp & Volum</h4>'; let warnings = 0;
+        const bc = STANDARDS.BODY_COMP;
+        if (userInput.userBodyFatPercent >= bc.fatPercentMin && userInput.userBodyFatPercent <= bc.fatPercentMax) { html += createFeedbackHTML(bc.label, 'positive', `${userInput.userBodyFatPercent}%. Innenfor ideelt område.`); }
+        else { html += createFeedbackHTML(bc.label, 'warning', `${userInput.userBodyFatPercent}%. Utenfor ideelt område.`); warnings++; }
+        const vol = STANDARDS.TRAINING_VOLUME;
+        if (userInput.userWeeklyTotalKm >= vol.weeklyKm.min) { html += createFeedbackHTML(vol.weeklyKm.label, 'positive', `${userInput.userWeeklyTotalKm} km. Krav oppfylt.`); }
+        else { html += createFeedbackHTML(vol.weeklyKm.label, 'critical-warning', `${userInput.userWeeklyTotalKm} km. Under krav (${vol.weeklyKm.min} km).`); warnings++; }
+        if (userInput.userWeeklyThresholdKm >= vol.thresholdKm.min && userInput.userWeeklyThresholdKm <= vol.thresholdKm.max) { html += createFeedbackHTML(vol.thresholdKm.label, 'positive', `${userInput.userWeeklyThresholdKm} km. Innenfor anbefalt.`); }
+        else { html += createFeedbackHTML(vol.thresholdKm.label, 'warning', `${userInput.userWeeklyThresholdKm} km. Utenfor anbefalt.`); warnings++; }
+        return { html, warnings };
+    }
+
+    // --- HOVEDFUNKSJON ---
+    function runAnalysis() {
+        const userInput = {
+            user3kSec: getSliderValue('input3kSec'), user5kSec: getSliderValue('input5kSec'), user10kSec: getSliderValue('input10kSec'), userhmSec: getSliderValue('inputhmSec'),
+            userPlankSec: getSliderValue('inputPlankSec'), userSidePlankSec: getSliderValue('inputSidePlankSec'), userPushups: getSliderValue('inputPushups'), userPullups: getSliderValue('inputPullups'),
+            userCalfRaise: getSliderValue('inputCalfRaise'),
+            userBodyFatPercent: getSliderValue('inputBodyFatPercent'), userWeeklyTotalKm: getSliderValue('inputWeeklyTotalKm'), userWeeklyThresholdKm: getSliderValue('inputWeeklyThresholdKm'),
+        };
+        const running = getRunningFeedback(userInput); const strength = getStrengthFeedback(userInput); const bodyVol = getBodyAndVolumeFeedback(userInput);
+        let baseEstimate = NaN;
+        if (running.estimates.length > 0) { let totalWTime = 0, totalW = 0; running.estimates.forEach(est => { totalWTime += est.time * est.weight; totalW += est.weight; }); baseEstimate = totalWTime / totalW; } else { baseEstimate = STANDARDS.MARATHON_SEC; }
+        const totalWarns = strength.warnings + bodyVol.warnings; const penalty = (strength.warnings * STANDARDS.PENALTIES.STRENGTH) + (bodyVol.warnings * STANDARDS.PENALTIES.VOLUME);
+        const finalEstimate = baseEstimate + penalty;
+        let overallHTML = `<p>Din estimerte maratontid er</p><strong>${formatTime(finalEstimate)}</strong>`;
+        if (running.estimates.length > 0 && totalWarns > 0) { overallHTML += `<p>Basistid fra løp: ${formatTime(baseEstimate)}. Justert med +${formatTime(penalty)} pga. forbedringspunkter.</p>`; }
+        if (finalEstimate <= STANDARDS.MARATHON_SEC) { overallHTML += `<p class="positive" style="margin-top: 1rem;">Gratulerer! Du er på kurs mot sub-3 timer.</p>`; }
+        else { overallHTML += `<p class="warning" style="margin-top: 1rem;">Du er på god vei! Fokuser på forbedringspunktene for å nå målet.</p>`; }
+        document.getElementById('overallAssessment').innerHTML = overallHTML;
+        document.getElementById('feedbackRunning').innerHTML = running.html;
+        document.getElementById('feedbackStrength').innerHTML = strength.html;
+        document.getElementById('feedbackBodyAndVolume').innerHTML = bodyVol.html;
+        const resultsEl = document.getElementById('results');
+        resultsEl.style.display = 'block';
+        resultsEl.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // Initialiser slidere når siden lastes
+    window.onload = setupSliders;
+
+</script>
+
+</body>
+</html>
